@@ -1,13 +1,79 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html {
+	height: 100dvh;
+	background: white;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+	padding: 2rem;
+	min-height: 100vh;
+	border-radius: 1rem;
+	margin: 0.5rem;
+	font-family: 'Urbanist', sans-serif;
+
+	background: linear-gradient(
+		66deg,
+		rgba(255, 200, 254, 1) 6%,
+		rgba(184, 184, 255, 1) 35%,
+		rgba(226, 180, 255, 1) 100%
+	);
+}
+
+.headshot_large {
+	width: 4.5rem;
+	height: 8rem;
+	border-radius: 0.25rem;
+	object-fit: cover;
+}
+
+.header {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 1rem;
+	align-items: center;
+}
+
+h1 {
+	display: inline-block;
+	background: white;
+
+	font-size: 1.5rem;
+
+	padding: 0.5em 1em;
+
+	margin: 0;
+
+	border-radius: 999px;
+
+	color: #4e4e4e;
+}
+
+nav {
+	height: 100%;
+	background: white;
+	display: flex;
+	border-radius: 999px;
+}
+
+nav a {
+	margin: 0.25rem;
+	color: #4e4e4e;
+	text-decoration: none;
+	border-radius: 999px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	padding: 0.5em 2em;
+}
+
+nav .selected_link {
+	color: white;
+	background: hsl(240, 25%, 60%);
+}
+
+.stat_grid {
+	margin: 2rem 0;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
 }

@@ -1,7 +1,8 @@
-export type Header = 'Sign Up Date' | 'Time Slot' | 'Name' | 'Gender' | 'Photo Link' | 'Resume Link'
+export type Header = 'Sign Up Date' | 'Time Slot' | 'Name' | 'Gender' | 'Photo Link' | 'Resume Link' | 'Id'
 
 export interface ComposedAuditionee {
 	name: string
+	id: string
 	resumeLink: string
 	photoLink: string
 	signUpDate: string

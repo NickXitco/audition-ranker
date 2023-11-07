@@ -1,5 +1,10 @@
 import { useLocation } from 'react-router'
 import { staticPaths } from './App'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from './store'
+import { useEffect } from 'react'
+import { setAuditionees } from './reducers/auditioneesReducer'
+import { Link } from 'react-router-dom'
 
 export const Navbar = () => {
 	const location = useLocation()
@@ -9,13 +14,13 @@ export const Navbar = () => {
 			<h1>She Loves Me</h1>
 			<nav>
 				{staticPaths.map((path) => (
-					<a
-						className={path.href === location.pathname ? 'selected_link' : ''}
-						href={path.href}
+					<Link
+						className={path.href === location.pathname ? 'selected_link' : 'nav_link'}
+						to={path.href}
 						key={path.href}
 					>
 						{path.title}
-					</a>
+					</Link>
 				))}
 			</nav>
 		</div>

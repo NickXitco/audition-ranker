@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Home } from './Home'
 import { Navbar } from './Navbar'
+import { Auditionees } from './Auditionees'
+import { setAuditionees } from './reducers/auditioneesReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from './store'
+import { Auditionee } from './Audtionee'
 
 export const staticPaths = [
 	{
@@ -9,15 +14,38 @@ export const staticPaths = [
 		title: 'Home',
 		component: <Home />,
 	},
+	{
+		href: '/auditionees',
+		title: 'Auditionees',
+		component: <Auditionees />,
+	},
 ]
 
-export const App = () => (
-	<BrowserRouter>
-		<Navbar />
-		<Routes>
-			{staticPaths.map((path) => (
-				<Route path={path.href} element={path.component} />
-			))}
-		</Routes>
-	</BrowserRouter>
-)
+export const App = () => {
+	const dispatch = useDispatch()
+	const auditionees = useSelector((state: RootState) => state.auditionees.auditionees)
+
+	useEffect(() => {
+		if (auditionees && auditionees.length > 0) return
+
+		console.log('fetching auditionees')
+
+		fetch('api/audition_package')
+			.then((response) => response.json())
+			.then((data) => {
+				return dispatch(setAuditionees(data))
+			})
+	}, [])
+
+	return (
+		<BrowserRouter>
+			<Navbar />
+			<Routes>
+				{staticPaths.map((path) => (
+					<Route path={path.href} element={path.component} key={path.href} />
+				))}
+				<Route path={'/auditionee/:id'} element={<Auditionee />} />
+			</Routes>
+		</BrowserRouter>
+	)
+}

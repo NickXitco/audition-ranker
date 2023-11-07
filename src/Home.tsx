@@ -1,16 +1,34 @@
-import { useEffect, useState } from 'react'
 import { ComposedAuditionee } from '../server/src/backend_types'
-import { BarChart } from './components/BarChart'
+import { BarChart } from './components/BarChart/BarChart'
+import { useSelector } from 'react-redux'
+import { RootState } from './store'
 
 export const Home = () => {
-	const [auditionees, setAuditionees] = useState<ComposedAuditionee[]>([])
+	const auditionees = useSelector((state: RootState) => state.auditionees.auditionees)
 
-	useEffect(() => {
-		fetch('api/audition_package')
-			.then((response) => response.json())
-			.then((data) => setAuditionees(data))
-	}, [])
+	return (
+		<main>
+			{auditionees && auditionees.length > 0 && (
+				<div className={'stat_grid'}>
+					<article>
+						<h2>Gender Breakdown</h2>
+						<BarChart data={getGenderData(auditionees)} param={'gender'} />
+					</article>
+					<article>
+						<h2>Interested Breakdown</h2>
+						<BarChart data={getInterestedRoleData(auditionees)} param={'role'} />
+					</article>
+					<article>
+						<h2>Vocal Part Breakdown</h2>
+						<BarChart data={getVocalPartData(auditionees)} param={'voice_part'} />
+					</article>
+				</div>
+			)}
+		</main>
+	)
+}
 
+function getGenderData(auditionees: ComposedAuditionee[]) {
 	const genderCounts: Record<string, number> = {}
 	for (const auditionee of auditionees) {
 		if (genderCounts[auditionee.gender]) {
@@ -20,22 +38,50 @@ export const Home = () => {
 		}
 	}
 
-	const genderData = Object.entries(genderCounts).map(([label, value]) => ({
+	return Object.entries(genderCounts).map(([label, value]) => ({
 		label,
 		value,
 		color: getGenderBreakdownColor(label),
 	}))
+}
 
-	return (
-		<main>
-			<div className={'stat_grid'}>
-				<article>
-					<h2>Gender Breakdown</h2>
-					<BarChart data={genderData} />
-				</article>
-			</div>
-		</main>
-	)
+function getInterestedRoleData(auditionees: ComposedAuditionee[]) {
+	const interestedCounts: Record<string, number> = {}
+	for (const auditionee of auditionees) {
+		for (const role of auditionee.roles) {
+			if (interestedCounts[role]) {
+				interestedCounts[role]++
+			} else {
+				interestedCounts[role] = 1
+			}
+		}
+	}
+
+	return Object.entries(interestedCounts)
+		.map(([label, value]) => ({
+			label,
+			value,
+		}))
+		.sort((a, b) => b.value - a.value)
+}
+function getVocalPartData(auditionees: ComposedAuditionee[]) {
+	const vocalPart: Record<string, number> = {}
+	for (const auditionee of auditionees) {
+		for (const part of auditionee.vocalPart.split(', ')) {
+			if (vocalPart[part]) {
+				vocalPart[part]++
+			} else {
+				vocalPart[part] = 1
+			}
+		}
+	}
+
+	return Object.entries(vocalPart)
+		.map(([label, value]) => ({
+			label,
+			value,
+		}))
+		.sort((a, b) => b.value - a.value)
 }
 
 const getGenderBreakdownColor = (label: string) => {

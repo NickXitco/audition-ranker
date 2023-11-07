@@ -50,6 +50,7 @@ const reduceData = (csv: any[], tableData: Record<Header, string>[]) => {
 
 		const composedObject: ComposedAuditionee = {
 			name: tableName,
+			id: tableRow['Id'],
 			resumeLink: tableRow['Resume Link'],
 			photoLink: tableRow['Photo Link'],
 			signUpDate: tableRow['Sign Up Date'],
@@ -168,6 +169,8 @@ const getPhotosAndIds = async () => {
 	const tableHeaders = tableRows[0].querySelectorAll('th')
 	const headers: Header[] = []
 
+	let id = ''
+
 	for (let i = 0; i < tableHeaders.length; i++) {
 		let headerText = cleanHeader(tableHeaders[i].textContent)
 
@@ -197,11 +200,17 @@ const getPhotosAndIds = async () => {
 				continue
 			}
 
+			const link = cell.querySelector('a')?.getAttribute('href') || ''
+
 			if (header === 'Photo Link' || header === 'Resume Link') {
-				const link = cell.querySelector('a')?.getAttribute('href') || ''
 				rowObject[header] = link ? `https://www.theaterforms.com${link}` : ``
 			} else {
 				rowObject[header] = cell.textContent.trim() || ''
+
+				if (link.includes('auditioner')) {
+					id = link.split('/')[5]
+					rowObject['Id'] = id
+				}
 			}
 		}
 		tableData.push(rowObject)

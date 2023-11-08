@@ -7,6 +7,7 @@ import { setAuditionees } from './reducers/auditioneesReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { Auditionee } from './Audtionee'
+import { RankingsPage } from './RankingsPage'
 
 export const staticPaths = [
 	{
@@ -18,6 +19,21 @@ export const staticPaths = [
 		href: '/auditionees',
 		title: 'Auditionees',
 		component: <Auditionees />,
+	},
+	{
+		href: '/day1',
+		title: 'Day 1 Ranks',
+		component: <RankingsPage scoreID={'Day 1'} />,
+	},
+	{
+		href: '/day2',
+		title: 'Day 2 Ranks',
+		component: <RankingsPage scoreID={'Day 2'} />,
+	},
+	{
+		href: '/callbacks',
+		title: 'Callbacks Ranks',
+		component: <RankingsPage scoreID={'Callbacks'} />,
 	},
 ]
 

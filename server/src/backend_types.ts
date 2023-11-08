@@ -36,4 +36,13 @@ export interface ComposedAuditionee {
 	appearance: string
 	conflictDates: Record<string, boolean>
 	conflictNotes: string
+	notes?: {
+		[category: string]: string
+	}
+	scores?: {
+		[category: string]: {
+			value: number
+			locked: boolean
+		}
+	}
 }

@@ -54,13 +54,13 @@ export const auditioneesReducer = (state = initialState, action: AuditioneeActio
 		case 'REMOVE_AUDITIONEE':
 			return {
 				...state,
-				auditionees: state.auditionees.filter((auditionee) => auditionee.email !== action.payload.email),
+				auditionees: state.auditionees.filter((auditionee) => auditionee.id !== action.payload.id),
 			}
 		case 'UPDATE_AUDITIONEE':
 			return {
 				...state,
 				auditionees: state.auditionees.map((auditionee) => {
-					if (auditionee.email === action.payload.email) {
+					if (auditionee.id === action.payload.id) {
 						return action.payload
 					}
 					return auditionee

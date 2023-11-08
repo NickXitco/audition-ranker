@@ -3,8 +3,12 @@ import { FC } from 'react'
 import { ComposedAuditionee } from '../../../server/src/backend_types'
 import { Link } from 'react-router-dom'
 import { ScoringTable } from '../ScoringTable/ScoringTable'
+import { useDispatch } from 'react-redux'
+import { updateAuditionee } from '../../reducers/auditioneesReducer'
 
 export const AuditioneeFull: FC<ComposedAuditionee> = (props) => {
+	const dispatch = useDispatch()
+
 	return (
 		<div className={styles.container}>
 			<Link
@@ -101,27 +105,56 @@ export const AuditioneeFull: FC<ComposedAuditionee> = (props) => {
 					{['Song', 'Quality', 'Musicality', 'Diction', 'Range', 'Acting', 'Vibes'].map((label) => (
 						<li key={label}>
 							<h3>{label}</h3>
-							<input type={'text'} className={styles.small_text_input} />
+							<input
+								type={'text'}
+								className={styles.small_text_input}
+								value={props.notes && props.notes[`Day 1 ${label}`]}
+								onChange={(e) => {
+									const newNotes = {
+										...props.notes,
+										[`Day 1 ${label}`]: e.target.value,
+									}
+									const newAuditionee = {
+										...props,
+										notes: newNotes,
+									}
+									dispatch(updateAuditionee(newAuditionee))
+								}}
+							/>
 						</li>
 					))}
 				</ul>
 
 				<h3>Notes</h3>
-				<textarea className={styles.full_text_input} />
+				<textarea
+					className={styles.full_text_input}
+					value={props.notes && props.notes['Day 1 Notes']}
+					onChange={(e) => {
+						const newNotes = {
+							...props.notes,
+							'Day 1 Notes': e.target.value,
+						}
+						const newAuditionee = {
+							...props,
+							notes: newNotes,
+						}
+						dispatch(updateAuditionee(newAuditionee))
+					}}
+				/>
 			</section>
 
 			<div className={styles.divider} />
 
 			<section>
 				<h2>Day 1 - Scoring</h2>
-				<ScoringTable id={props.id} />
+				<ScoringTable id={props.id} tableID={'Day 1'} />
 			</section>
 		</div>
 	)
 }
 
 const LinkIcon = () => (
-	<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
+	<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd">
 		<path
 			fill={'purple'}
 			d="M14.851 11.923c-.179-.641-.521-1.246-1.025-1.749-1.562-1.562-4.095-1.563-5.657 0l-4.998 4.998c-1.562 1.563-1.563 4.095 0 5.657 1.562 1.563 4.096 1.561 5.656 0l3.842-3.841.333.009c.404 0 .802-.04 1.189-.117l-4.657 4.656c-.975.976-2.255 1.464-3.535 1.464-1.28 0-2.56-.488-3.535-1.464-1.952-1.951-1.952-5.12 0-7.071l4.998-4.998c.975-.976 2.256-1.464 3.536-1.464 1.279 0 2.56.488 3.535 1.464.493.493.861 1.063 1.105 1.672l-.787.784zm-5.703.147c.178.643.521 1.25 1.026 1.756 1.562 1.563 4.096 1.561 5.656 0l4.999-4.998c1.563-1.562 1.563-4.095 0-5.657-1.562-1.562-4.095-1.563-5.657 0l-3.841 3.841-.333-.009c-.404 0-.802.04-1.189.117l4.656-4.656c.975-.976 2.256-1.464 3.536-1.464 1.279 0 2.56.488 3.535 1.464 1.951 1.951 1.951 5.119 0 7.071l-4.999 4.998c-.975.976-2.255 1.464-3.535 1.464-1.28 0-2.56-.488-3.535-1.464-.494-.495-.863-1.067-1.107-1.678l.788-.785z"

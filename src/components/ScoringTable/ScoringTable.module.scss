@@ -5,6 +5,7 @@
 	padding: 0.5rem;
 	border-radius: 0.25rem;
 	border: 1px solid rgba(0, 0, 0, 0.1);
+	gap: 1rem;
 }
 
 .scorer_container {
@@ -16,4 +17,83 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	position: relative;
+
+	h3 {
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		padding: 0.5rem 1rem;
+
+		background: aliceblue;
+
+		margin: 0.5rem;
+		border-radius: 0.5rem;
+
+		font-weight: 400;
+	}
+}
+
+.bucket_buttons {
+	display: flex;
+	gap: 1rem;
+
+	button {
+		padding: 0.5rem 1rem;
+		border-radius: 0.25rem;
+		border: none;
+		background: rgba(0, 0, 0, 0.025);
+		cursor: pointer;
+		transition: all 0.1s ease-in-out;
+
+		&:nth-child(1) {
+			background: hsla(109, 83%, 42%, 0.3);
+		}
+
+		&:nth-child(2) {
+			background: hsla(48, 83%, 42%, 0.3);
+		}
+
+		&:nth-child(3) {
+			background: hsla(0, 83%, 42%, 0.3);
+		}
+
+		&:nth-child(4) {
+			background: hsla(109, 0%, 42%, 0.3);
+		}
+
+		&:hover {
+			opacity: 0.75;
+		}
+	}
+}
+
+.rerank_button {
+	position: absolute;
+
+	top: 0;
+	right: 0;
+
+	padding: 0.5rem 1rem;
+	margin: 0.5rem;
+	border-radius: 0.25rem;
+	border: none;
+
+	background: rgba(0, 0, 0, 0.025);
+	cursor: pointer;
+
+	svg {
+		height: 1.5rem;
+		width: 1.5rem;
+	}
+}
+
+.locked_score {
+	h4 {
+		margin: 0;
+		padding: 0;
+		font-size: 2rem;
+	}
 }

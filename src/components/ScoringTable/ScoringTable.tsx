@@ -3,8 +3,8 @@ import styles from './ScoringTable.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { updateAuditionee } from '../../reducers/auditioneesReducer'
-import { start } from 'repl'
 import { bucketValues, getAllAuditioneesInRange, getScoreColor } from '../../utils'
+import { ComposedAuditionee } from '../../../server/src/backend_types'
 
 interface ScoringTableProps {
 	id: string
@@ -21,6 +21,8 @@ const roles = [
 	'Mr. Maraczek',
 	'Arpad Laszlo',
 ]
+
+const EPSILON = 1 / 1024
 
 export const ScoringTable: FC<ScoringTableProps> = (props) => {
 	return (
@@ -48,7 +50,7 @@ export const Scorer: FC<ScorerProps> = (props) => {
 	const scoreLocked = scoreObject?.locked
 
 	const showInitialBuckets = !scoreObject
-	const locked = scoreLocked || scoreValue !== undefined
+	const locked = scoreLocked
 
 	const scoring = !locked && !showInitialBuckets
 
@@ -107,6 +109,18 @@ export const Scorer: FC<ScorerProps> = (props) => {
 			return
 		}
 
+		// push "wall" auditionee
+		auditioneesInBucket.push({
+			...auditionee,
+			id: 'temp',
+			scores: {
+				[scoreID]: {
+					value: low,
+					locked: false,
+				},
+			},
+		})
+
 		const sortedAuditionees = auditioneesInBucket.sort((a, b) => {
 			const aScore = a.scores![scoreID]!.value
 			const bScore = b.scores![scoreID]!.value
@@ -114,9 +128,16 @@ export const Scorer: FC<ScorerProps> = (props) => {
 			return aScore - bScore
 		})
 
+		// If there are an even number of auditionees, the middle score is the average of the two middle scores
+		// If there are an odd number of auditionees, the middle score is the middle score
+
 		const middleIndex = Math.floor(sortedAuditionees.length / 2)
-		const middleAuditionee = sortedAuditionees[middleIndex]
-		const middleScore = middleAuditionee.scores![scoreID]!.value
+		const middleScore =
+			sortedAuditionees.length % 2 === 0
+				? (sortedAuditionees[middleIndex].scores![scoreID]!.value +
+						sortedAuditionees[middleIndex - 1].scores![scoreID]!.value) /
+				  2
+				: sortedAuditionees[middleIndex].scores![scoreID]!.value
 
 		startUnlockedScore(middleScore)
 	}
@@ -158,7 +179,100 @@ export const Scorer: FC<ScorerProps> = (props) => {
 				</div>
 			)}
 
-			{scoring && <div>Let's score</div>}
+			{scoring && (
+				<div>
+					<ScoreComparison auditionee={auditionee} scoreID={scoreID} />
+				</div>
+			)}
 		</div>
+	)
+}
+
+interface ScoreComparisonProps {
+	auditionee: ComposedAuditionee
+	scoreID: string
+}
+
+const getScore = (auditionee: ComposedAuditionee, scoreID: string) => {
+	const score = auditionee?.scores?.[scoreID]
+	if (!score) return -Infinity
+	return score.value
+}
+
+const ScoreComparison: FC<ScoreComparisonProps> = (props) => {
+	const dispatch = useDispatch()
+	const auditionees = useSelector((state: RootState) => state.auditionees.auditionees)
+
+	const challengerScore = getScore(props.auditionee, props.scoreID)
+
+	// find auditionee with the closest score
+	const defender = auditionees.reduce((prev, curr) => {
+		if (curr.id === props.auditionee.id) return prev
+
+		const currScore = getScore(curr, props.scoreID)
+		const prevScore = getScore(prev, props.scoreID)
+
+		const currDiff = Math.abs(currScore - challengerScore)
+		const prevDiff = Math.abs(prevScore - challengerScore)
+
+		if (currDiff < prevDiff) return curr
+		return prev
+	})
+
+	const defenderScore = getScore(defender, props.scoreID)
+
+	const selectedPortrait = (choice: 'challenger' | 'defender') => {
+		alert(choice)
+
+		// TODO step 1:
+		// If challenger, we get the bucket of all auditionees with a score between the top range of the bucket and the defender's score + EPSILON, since we know that the challenger's score is greater than the defender's score
+		// If the bucket is empty, we set the challenger's score to the bucket high + epsilon and rescore the whole bucket for an even distribution
+
+		// If defender, we do the same thing, but with the bottom range of the bucket and the defender's score - EPSILON, since we know that the challenger's score is less than the defender's score
+		// If the bucket is empty, we set the challenger's score to the bucket low + epsilon and rescore the whole bucket for an even distribution
+
+		// TODO step 2:
+
+		// Similar to before, we take our bucket and add the bottom wall auditionee, then sort by score. The middle score is the new challenger's score
+
+		// Repeat until the exit condition of step 1 is met
+	}
+
+	return (
+		<div className={styles.duel_arena}>
+			<Portrait
+				score={challengerScore}
+				auditionee={props.auditionee}
+				onClick={() => {
+					selectedPortrait('challenger')
+				}}
+			/>
+			<p>vs.</p>
+			<Portrait
+				score={defenderScore}
+				auditionee={defender}
+				onClick={() => {
+					selectedPortrait('defender')
+				}}
+			/>
+		</div>
+	)
+}
+
+const Portrait: FC<{ auditionee: ComposedAuditionee; score: number; onClick: () => void }> = (props) => {
+	return (
+		<button className={styles.portrait} onClick={props.onClick}>
+			<img src={props.auditionee.photoLink} alt={props.auditionee.name} />
+			<h2>
+				{props.auditionee.name} -{' '}
+				<span
+					style={{
+						color: getScoreColor(props.score),
+					}}
+				>
+					{props.score}
+				</span>
+			</h2>
+		</button>
 	)
 }

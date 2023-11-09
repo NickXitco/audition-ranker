@@ -1,4 +1,5 @@
 import { ComposedAuditionee } from '../server/src/backend_types'
+import { RootState } from './store'
 
 type Roles =
 	| 'Ilona Ritter'
@@ -68,10 +69,10 @@ export const getAllAuditioneesInRange = (
 }
 
 export const getScoreColor = (score: number) => {
-	if (score >= bucketValues('good').low) return 'rgba(0, 255, 0, 0.5)'
-	if (score >= bucketValues('okay').low) return 'rgba(255,255,0,0.5)'
-	if (score >= bucketValues('bad').low) return 'rgba(255,0,0,0.5)'
-	return 'rgba(110,110,110,0.5)'
+	if (score >= bucketValues('good').low) return 'hsl(120,100%,40%)'
+	if (score >= bucketValues('okay').low) return 'hsl(60,100%,40%)'
+	if (score >= bucketValues('bad').low) return 'hsl(0,100%,40%)'
+	return 'hsl(0,0%,40%)'
 }
 
 export const saveToLocalStorage = (state: any) => {
@@ -83,7 +84,7 @@ export const saveToLocalStorage = (state: any) => {
 	}
 }
 
-export const loadFromLocalStorage = () => {
+export const loadFromLocalStorage = (): RootState | undefined => {
 	try {
 		const serializedState = localStorage.getItem('state')
 		if (serializedState === null) return undefined

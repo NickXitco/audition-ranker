@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from './store'
 import { Auditionee } from './Audtionee'
 import { RankingsPage } from './RankingsPage'
+import { loadFromLocalStorage } from './utils'
 
 export const staticPaths = [
 	{
@@ -44,7 +45,15 @@ export const App = () => {
 	useEffect(() => {
 		if (auditionees && auditionees.length > 0) return
 
-		console.log('fetching auditionees')
+		const savedState = loadFromLocalStorage()
+
+		if (savedState && savedState.auditionees) {
+			const auditioneesList = savedState.auditionees.auditionees
+			if (auditioneesList && auditioneesList.length > 0) {
+				dispatch(setAuditionees(auditioneesList))
+				return
+			}
+		}
 
 		fetch('api/audition_package')
 			.then((response) => response.json())

@@ -149,6 +149,86 @@ export const AuditioneeFull: FC<ComposedAuditionee> = (props) => {
 				<h2>Day 1 - Scoring</h2>
 				<ScoringTable id={props.id} tableID={'Day 1'} />
 			</section>
+
+			<div className={styles.divider} />
+
+			<section>
+				<h2>Day 2 - Dance Notes</h2>
+				<ul className={styles.small_inputs}>
+					{['Acting', 'Accuracy', 'Sharpness', 'Vibes'].map((label) => (
+						<li key={label}>
+							<h3>{label}</h3>
+							<input
+								type={'text'}
+								className={styles.small_text_input}
+								value={props.notes && props.notes[`Day 2 ${label}`]}
+								onChange={(e) => {
+									const newNotes = {
+										...props.notes,
+										[`Day 2 ${label}`]: e.target.value,
+									}
+									const newAuditionee = {
+										...props,
+										notes: newNotes,
+									}
+									dispatch(updateAuditionee(newAuditionee))
+								}}
+							/>
+						</li>
+					))}
+				</ul>
+
+				<h3>Notes</h3>
+				<textarea
+					className={styles.full_text_input}
+					value={props.notes && props.notes['Day 2 Notes']}
+					onChange={(e) => {
+						const newNotes = {
+							...props.notes,
+							'Day 2 Notes': e.target.value,
+						}
+						const newAuditionee = {
+							...props,
+							notes: newNotes,
+						}
+						dispatch(updateAuditionee(newAuditionee))
+					}}
+				/>
+			</section>
+
+			<div className={styles.divider} />
+
+			<section>
+				<h2>Day 2 - Scoring</h2>
+				<ScoringTable id={props.id} tableID={'Day 2'} />
+			</section>
+
+			<div className={styles.divider} />
+
+			<section>
+				<h2>Callbacks Notes</h2>
+				<textarea
+					className={styles.full_text_input}
+					value={props.notes && props.notes['Callbacks Notes']}
+					onChange={(e) => {
+						const newNotes = {
+							...props.notes,
+							'Callbacks Notes': e.target.value,
+						}
+						const newAuditionee = {
+							...props,
+							notes: newNotes,
+						}
+						dispatch(updateAuditionee(newAuditionee))
+					}}
+				/>
+			</section>
+			<div className={styles.divider} />
+
+			<section>
+				<h2>Callbacks - Scoring</h2>
+				<ScoringTable id={props.id} tableID={'Callbacks'} />
+			</section>
 		</div>
 	)
 }

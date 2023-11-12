@@ -24,17 +24,17 @@ export const staticPaths = [
 	{
 		href: '/day1',
 		title: 'Day 1 Ranks',
-		component: <RankingsPage scoreID={'Day 1'} />,
+		component: <RankingsPage scoreIDFragment={'Day 1'} />,
 	},
 	{
 		href: '/day2',
 		title: 'Day 2 Ranks',
-		component: <RankingsPage scoreID={'Day 2'} />,
+		component: <RankingsPage scoreIDFragment={'Day 2'} />,
 	},
 	{
 		href: '/callbacks',
 		title: 'Callbacks Ranks',
-		component: <RankingsPage scoreID={'Callbacks'} />,
+		component: <RankingsPage scoreIDFragment={'Callbacks'} />,
 	},
 ]
 

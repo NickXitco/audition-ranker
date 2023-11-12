@@ -32,7 +32,7 @@ export const getRoleShortName = (role: string) => {
 	}
 }
 
-export const bucketValues = (bucket: 'good' | 'okay' | 'bad') => {
+export const getBucketValues = (bucket: 'good' | 'okay' | 'bad') => {
 	switch (bucket) {
 		case 'good':
 			return {
@@ -52,11 +52,17 @@ export const bucketValues = (bucket: 'good' | 'okay' | 'bad') => {
 	}
 }
 
+export const getBucketFromScore = (score: number) => {
+	if (score >= getBucketValues('good').low) return 'good'
+	if (score >= getBucketValues('okay').low) return 'okay'
+	if (score >= getBucketValues('bad').low) return 'bad'
+	return 'bad'
+}
+
 export const getAllAuditioneesInRange = (
 	auditionees: ComposedAuditionee[],
 	scoreID: string,
-	high: number,
-	low: number
+	{ high, low }: { high: number; low: number }
 ) => {
 	return auditionees.filter((auditionee) => {
 		const scoreObject = auditionee.scores?.[scoreID]
@@ -69,9 +75,9 @@ export const getAllAuditioneesInRange = (
 }
 
 export const getScoreColor = (score: number) => {
-	if (score >= bucketValues('good').low) return 'hsl(120,100%,40%)'
-	if (score >= bucketValues('okay').low) return 'hsl(60,100%,40%)'
-	if (score >= bucketValues('bad').low) return 'hsl(0,100%,40%)'
+	if (score >= getBucketValues('good').low) return 'hsl(120,100%,40%)'
+	if (score >= getBucketValues('okay').low) return 'hsl(60,100%,40%)'
+	if (score >= getBucketValues('bad').low) return 'hsl(0,100%,40%)'
 	return 'hsl(0,0%,40%)'
 }
 

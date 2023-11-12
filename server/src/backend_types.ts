@@ -43,6 +43,10 @@ export interface ComposedAuditionee {
 		[category: string]: {
 			value: number
 			locked: boolean
+			range?: {
+				high: number
+				low: number
+			}
 		}
 	}
 }

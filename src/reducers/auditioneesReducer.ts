@@ -5,6 +5,7 @@ enum AuditioneeActionType {
 	ADD_AUDITIONEE = 'ADD_AUDITIONEE',
 	REMOVE_AUDITIONEE = 'REMOVE_AUDITIONEE',
 	UPDATE_AUDITIONEE = 'UPDATE_AUDITIONEE',
+	UPDATE_MULTIPLE_AUDITIONEES = 'UPDATE_MULTIPLE_AUDITIONEES',
 }
 
 export const setAuditionees = (auditionees: ComposedAuditionee[]) => ({
@@ -25,6 +26,11 @@ export const removeAuditionee = (auditionee: ComposedAuditionee) => ({
 export const updateAuditionee = (auditionee: ComposedAuditionee) => ({
 	type: AuditioneeActionType.UPDATE_AUDITIONEE,
 	payload: auditionee,
+})
+
+export const updateMultipleAuditionees = (auditionees: ComposedAuditionee[]) => ({
+	type: AuditioneeActionType.UPDATE_MULTIPLE_AUDITIONEES,
+	payload: auditionees,
 })
 
 interface AuditioneeAction {
@@ -62,6 +68,19 @@ export const auditioneesReducer = (state = initialState, action: AuditioneeActio
 				auditionees: state.auditionees.map((auditionee) => {
 					if (auditionee.id === action.payload.id) {
 						return action.payload
+					}
+					return auditionee
+				}),
+			}
+		case 'UPDATE_MULTIPLE_AUDITIONEES':
+			return {
+				...state,
+				auditionees: state.auditionees.map((auditionee) => {
+					const updatedAuditionee = action.payload.find(
+						(newAuditionee: ComposedAuditionee) => newAuditionee.id === auditionee.id
+					)
+					if (updatedAuditionee) {
+						return updatedAuditionee
 					}
 					return auditionee
 				}),

@@ -1,14 +1,30 @@
 import { ComposedAuditionee } from '../../../server/src/backend_types'
 import { FC } from 'react'
 import styles from './AuditioneeBrief.module.scss'
-import { getRoleShortName } from '../../utils'
+import { getRoleShortName, getScoreColor } from '../../utils'
 import { Link } from 'react-router-dom'
 
-export const AuditioneeBrief: FC<ComposedAuditionee> = (props) => {
+interface AuditioneeBriefProps extends ComposedAuditionee {
+	scoreID?: string
+}
+export const AuditioneeBrief: FC<AuditioneeBriefProps> = (props) => {
 	const numConflicts = Object.values(props.conflictDates).reduce((a, b) => (a += b ? 1 : 0), 0)
+
+	let score = props.scoreID ? props.scores![props.scoreID] : undefined
+	if (score && score.value < 0) score = undefined
 
 	return (
 		<div className={styles.container}>
+			{props.scoreID && score && (
+				<p
+					className={styles.score}
+					style={{
+						color: getScoreColor(props.scores![props.scoreID]!.value),
+					}}
+				>
+					{props.scores![props.scoreID]!.value.toFixed(1)}
+				</p>
+			)}
 			<img src={props.photoLink} alt={props.name} className={styles.headshot} />
 			<div className={styles.content}>
 				<div className={styles.top_line}>
